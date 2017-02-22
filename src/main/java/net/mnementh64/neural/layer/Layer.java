@@ -37,4 +37,15 @@ public abstract class Layer
 	{
 		weightsToNext = WeightUtils.init(this.nodes.size(), nextLayer.nodes.size(), weightInitFunction);
 	}
+
+	public int getNbNodes()
+	{
+		return nodes.size();
+	}
+
+	public List<Float> feedForward(List<Float> previousLayerOutput, Layer previousLayer) throws Exception
+	{
+
+		return new ArrayList<>();
+	}
 }

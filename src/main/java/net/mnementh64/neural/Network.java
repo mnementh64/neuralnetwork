@@ -10,13 +10,50 @@ import net.mnementh64.neural.layer.Layer;
 import net.mnementh64.neural.layer.OutputLayer;
 import net.mnementh64.neural.layer.WeightInitFunction;
 
-public class Network
+class Network
 {
 
-	List<Layer> layers = new ArrayList<>();
+	private List<Layer> layers = new ArrayList<>();
 
 	private Network()
 	{
+	}
+
+	List<Float> feedForward(List<Float> input) throws Exception
+	{
+		// check input size
+		if (input.size() != layers.get(0).getNbNodes())
+			throw new Exception("Input vector is expected to be of size " + layers.get(0).getNbNodes());
+
+		// Feed forward each layer after first
+		List<Float> layerInput = new ArrayList<>(input);
+		List<Float> layerOutput = new ArrayList<>();
+		Layer previousLayer = null;
+		boolean first = true;
+		for (Layer layer : layers)
+		{
+			try
+			{
+				// skip first
+				if (first)
+				{
+					first = false;
+					continue;
+				}
+
+				layerOutput = layer.feedForward(layerInput, previousLayer);
+
+				// current output becomes input of next layer
+				layerInput.clear();
+				layerInput.addAll(layerOutput);
+			}
+			finally
+			{
+				previousLayer = layer;
+			}
+		}
+
+		return layerOutput;
 	}
 
 	private void setLayers(List<Layer> layers)
@@ -27,8 +64,8 @@ public class Network
 	static class Builder
 	{
 
-		List<LayerDescriptor> layerDescriptors = new ArrayList<>();
-		WeightInitFunction weightInitFunction;
+		private List<LayerDescriptor> layerDescriptors = new ArrayList<>();
+		private WeightInitFunction weightInitFunction;
 
 		private class LayerDescriptor
 		{
@@ -37,13 +74,21 @@ public class Network
 			ActivationFunction activationFunction;
 		}
 
-		public Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
+		Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
 		{
 			this.weightInitFunction = weightInitFunction;
 			return this;
 		}
 
-		public Builder addLayer(int nbNodes, ActivationFunction activationFunction)
+		Builder addLayer(int nbNodes)
+		{
+			LayerDescriptor layerDescriptor = new LayerDescriptor();
+			layerDescriptor.nbNodes = nbNodes;
+			layerDescriptors.add(layerDescriptor);
+			return this;
+		}
+
+		Builder addLayer(int nbNodes, ActivationFunction activationFunction)
 		{
 			LayerDescriptor layerDescriptor = new LayerDescriptor();
 			layerDescriptor.nbNodes = nbNodes;
@@ -52,7 +97,7 @@ public class Network
 			return this;
 		}
 
-		public Network build() throws Exception
+		Network build() throws Exception
 		{
 			checkRequirements();
 
@@ -63,7 +108,7 @@ public class Network
 			List<Layer> layers = new ArrayList<>();
 			// first layer
 			LayerDescriptor layerDescriptor = layerDescriptors.get(0);
-			Layer firstLayer = new InputLayer(layerDescriptor.activationFunction, layerDescriptor.nbNodes);
+			Layer firstLayer = new InputLayer(layerDescriptor.nbNodes); // no need of any activation function
 			layers.add(firstLayer);
 
 			// hidden layers

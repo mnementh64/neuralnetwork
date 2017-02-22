@@ -5,6 +5,6 @@ public class HiddenLayer extends Layer
 
 	public HiddenLayer(ActivationFunction activationFunction, int nbNodes)
 	{
-		super(activationFunction, nbNodes);
+		super(activationFunction == null ? ActivationFunction.SIGMOID : activationFunction, nbNodes);
 	}
 }

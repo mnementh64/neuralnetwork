@@ -5,6 +5,6 @@ public class OutputLayer extends Layer
 
 	public OutputLayer(ActivationFunction activationFunction, int nbNodes)
 	{
-		super(activationFunction, nbNodes);
+		super(activationFunction == null ? ActivationFunction.SIGMOID : activationFunction, nbNodes);
 	}
 }
