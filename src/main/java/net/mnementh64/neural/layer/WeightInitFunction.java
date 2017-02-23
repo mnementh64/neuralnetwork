@@ -2,5 +2,5 @@ package net.mnementh64.neural.layer;
 
 public enum WeightInitFunction
 {
-	RANDOM
+	UNIT, RANDOM
 }

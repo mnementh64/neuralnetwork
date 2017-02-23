@@ -8,4 +8,10 @@ public class InputLayer extends Layer
 		super(null, nbNodes);
 	}
 
+	@Override
+	public void feedForward(Layer previousLayer) throws Exception
+	{
+		// do nothing for first layer
+	}
+
 }

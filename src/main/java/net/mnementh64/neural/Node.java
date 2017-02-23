@@ -6,9 +6,13 @@ public class Node
 	/**
 	 * input value before activation function application
 	 */
-	float input;
+	public float input;
+	/**
+	 * node value after activation function application
+	 */
+	public float value;
 	/**
 	 * error retropropagation value at this node
 	 */
-	float delta;
+	public float delta;
 }

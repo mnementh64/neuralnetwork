@@ -22,43 +22,60 @@ class Network
 	List<Float> feedForward(List<Float> input) throws Exception
 	{
 		// check input size
-		if (input.size() != layers.get(0).getNbNodes())
-			throw new Exception("Input vector is expected to be of size " + layers.get(0).getNbNodes());
+		if (input.size() != getInputSize())
+			throw new Exception("Input vector is expected to be of size " + getInputSize());
+
+		// feed first layer with input values
+		layers.get(0).init(input);
 
 		// Feed forward each layer after first
-		List<Float> layerInput = new ArrayList<>(input);
-		List<Float> layerOutput = new ArrayList<>();
 		Layer previousLayer = null;
-		boolean first = true;
 		for (Layer layer : layers)
 		{
-			try
-			{
-				// skip first
-				if (first)
-				{
-					first = false;
-					continue;
-				}
-
-				layerOutput = layer.feedForward(layerInput, previousLayer);
-
-				// current output becomes input of next layer
-				layerInput.clear();
-				layerInput.addAll(layerOutput);
-			}
-			finally
-			{
-				previousLayer = layer;
-			}
+			layer.feedForward(previousLayer);
+			previousLayer = layer;
 		}
 
-		return layerOutput;
+		return layers.get(layers.size() - 1).getOutput();
+	}
+
+	void retroPropagateError(List<Float> expectedValues) throws Exception
+	{
+		// check the expected values size
+		if (expectedValues.size() != getOutputSize())
+			throw new Exception("Expected values vector must be of size " + getOutputSize());
+
+		// start from the last layer
 	}
 
 	private void setLayers(List<Layer> layers)
 	{
 		this.layers = layers;
+	}
+
+	int size()
+	{
+		return layers.size();
+	}
+
+	/**
+	 * Get a layer size
+	 * @param layerIndex : 0 based index
+	 * @return
+	 */
+	int getLayerSize(int layerIndex)
+	{
+		return layers.get(layerIndex).size();
+	}
+
+	int getInputSize()
+	{
+		return getLayerSize(0);
+	}
+
+	int getOutputSize()
+	{
+		return getLayerSize(size() - 1);
 	}
 
 	static class Builder
@@ -112,7 +129,7 @@ class Network
 			layers.add(firstLayer);
 
 			// hidden layers
-			for (int i = 1; i < layerDescriptors.size(); i++)
+			for (int i = 1; i < (layerDescriptors.size() - 1); i++)
 			{
 				layerDescriptor = layerDescriptors.get(i);
 				Layer hiddenLayer = new HiddenLayer(layerDescriptor.activationFunction, layerDescriptor.nbNodes);
