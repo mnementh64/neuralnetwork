@@ -14,6 +14,7 @@ class Network
 {
 
 	private List<Layer> layers = new ArrayList<>();
+	private float learningRate = 0.01f;
 
 	private Network()
 	{
@@ -21,10 +22,6 @@ class Network
 
 	List<Float> feedForward(List<Float> input) throws Exception
 	{
-		// check input size
-		if (input.size() != getInputSize())
-			throw new Exception("Input vector is expected to be of size " + getInputSize());
-
 		// feed first layer with input values
 		layers.get(0).init(input);
 
@@ -41,11 +38,24 @@ class Network
 
 	void retroPropagateError(List<Float> expectedValues) throws Exception
 	{
-		// check the expected values size
-		if (expectedValues.size() != getOutputSize())
-			throw new Exception("Expected values vector must be of size " + getOutputSize());
+		// compute error for the last layer
+		((OutputLayer) layers.get(layers.size() - 1)).computeError(expectedValues);
 
-		// start from the last layer
+		// From the pre-last layer : compute layers's nodes' delta
+		Layer nextLayer = layers.get(layers.size() - 1);
+		for (int i = layers.size() - 2; i >= 0; i--)
+		{
+			layers.get(i).computeDelta(nextLayer);
+			nextLayer = layers.get(i);
+		}
+
+		// From the pre-last layer : adjust layers's weights
+		nextLayer = layers.get(layers.size() - 1);
+		for (int i = layers.size() - 2; i >= 0; i--)
+		{
+			layers.get(i).adjustWeights(nextLayer, learningRate);
+			nextLayer = layers.get(i);
+		}
 	}
 
 	private void setLayers(List<Layer> layers)
@@ -83,6 +93,7 @@ class Network
 
 		private List<LayerDescriptor> layerDescriptors = new ArrayList<>();
 		private WeightInitFunction weightInitFunction;
+		private float learningRate = 0.01f;
 
 		private class LayerDescriptor
 		{
@@ -94,6 +105,12 @@ class Network
 		Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
 		{
 			this.weightInitFunction = weightInitFunction;
+			return this;
+		}
+
+		Builder setLearningRate(float learningRate)
+		{
+			this.learningRate = learningRate;
 			return this;
 		}
 
@@ -119,6 +136,7 @@ class Network
 			checkRequirements();
 
 			Network network = new Network();
+			network.learningRate = learningRate;
 
 			// -------------------------------------------------------------------
 			// Create layers

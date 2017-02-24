@@ -39,9 +39,13 @@ public abstract class Layer
 		weightsToNext = WeightUtils.init(this.nodes.size(), nextLayer.nodes.size(), weightInitFunction);
 	}
 
-	public int size()
+	public void init(List<Float> input) throws Exception
 	{
-		return nodes.size();
+		if (input.size() != size())
+			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + size());
+
+		IntStream.range(0, input.size())
+				.forEach(i -> nodes.get(i).value = input.get(i));
 	}
 
 	public void feedForward(Layer previousLayer) throws Exception
@@ -55,11 +59,55 @@ public abstract class Layer
 		}
 	}
 
+	public void computeDelta(Layer nextLayer) throws Exception
+	{
+		// compute each current layer's node's delta
+		for (int j = 0; j < nodes.size(); j++)
+		{
+			Node node = nodes.get(j);
+			float delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
+			node.delta = applyActivationDerivativeFunction(delta, activationFunction);
+		}
+	}
+
+	public void adjustWeights(Layer nextLayer, float learningRate) throws Exception
+	{
+		for (int i = 0; i < nodes.size(); i++)
+		{
+			Node node = nodes.get(i);
+
+			for (int j = 0; j < nextLayer.size(); j++)
+			{
+				float nextDelta = nextLayer.getDelta(j);
+				weightsToNext[i][j] += learningRate * node.value * nextDelta;
+			}
+		}
+	}
+
 	public List<Float> getOutput()
 	{
 		return nodes.stream()
 				.map(n -> n.value)
 				.collect(Collectors.toList());
+	}
+
+	public int size()
+	{
+		return nodes.size();
+	}
+
+	private float getDelta(int j) throws Exception
+	{
+		return nodes.get(j).delta;
+	}
+
+	private float computeWeightedDelta(float[] weights) throws Exception
+	{
+		float value = 0;
+		for (int i = 0; i < nodes.size(); i++)
+			value += weights[i] * nodes.get(i).delta;
+
+		return value;
 	}
 
 	private float applyActivationFunction(float input, ActivationFunction activationFunction) throws Exception
@@ -76,6 +124,20 @@ public abstract class Layer
 		throw new Exception("Unsupported activation function : " + activationFunction);
 	}
 
+	private float applyActivationDerivativeFunction(float input, ActivationFunction activationFunction) throws Exception
+	{
+		switch (activationFunction)
+		{
+			case IDENTITY:
+				return 1;
+
+			case SIGMOID:
+				// TODO
+				return input;
+		}
+		throw new Exception("Unsupported derivative activation function : " + activationFunction);
+	}
+
 	private float computeOutputToNode(int nextLayerNodeIndex) throws Exception
 	{
 		float value = 0;
@@ -84,14 +146,5 @@ public abstract class Layer
 			value += nodes.get(i).value * weightsToNext[i][nextLayerNodeIndex];
 
 		return value;
-	}
-
-	public void init(List<Float> input) throws Exception
-	{
-		if (input.size() != size())
-			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + size());
-
-		IntStream.range(0, input.size())
-				.forEach(i -> nodes.get(i).value = input.get(i));
 	}
 }
