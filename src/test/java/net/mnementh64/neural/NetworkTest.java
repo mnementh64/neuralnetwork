@@ -7,6 +7,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.mnementh64.neural.layer.ActivationFunction;
 import net.mnementh64.neural.layer.WeightInitFunction;
 
@@ -96,6 +100,41 @@ public class NetworkTest
 		network.feedForward(input);
 		List<Float> expectedValues = Arrays.asList(10f, 10f);
 		network.retroPropagateError(expectedValues);
+	}
+
+	@Test
+	public void sherbrookFeedForwardTest() throws Exception
+	{
+		String descriptor = TestUtils.loadResource("sherbrook1.json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+		Network network = mapper.readValue(descriptor, Network.class);
+
+		List<Float> input = Arrays.asList(2f, -1f);
+		List<Float> output = network.feedForward(input);
+
+		Assert.assertNotNull(output);
+		Assert.assertEquals(0.648, output.get(0), 0.001);
+	}
+
+	@Test
+	public void sherbrookRetroPropagationDeltaTest() throws Exception
+	{
+		String descriptor = TestUtils.loadResource("sherbrook1.json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+		Network network = mapper.readValue(descriptor, Network.class);
+
+		List<Float> input = Arrays.asList(2f, -1f);
+		List<Float> output = network.feedForward(input);
+
+		List<Float> expectedValues = Collections.singletonList(1f);
+		network.retroPropagateError(expectedValues);
+
+		String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(network);
+		System.out.println(json);
+		String expectedJson = TestUtils.loadResource("sherbrook1-step1.json");
+		Assert.assertTrue(json.equals(expectedJson));
 	}
 
 }

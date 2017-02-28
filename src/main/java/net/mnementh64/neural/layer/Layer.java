@@ -81,7 +81,7 @@ public abstract class Layer
 		{
 			Node node = nodes.get(j);
 			float delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
-			node.delta = applyActivationDerivativeFunction(delta, activationFunction);
+			node.delta = delta * applyActivationDerivativeFunction(node.input, activationFunction);
 		}
 	}
 

@@ -45,7 +45,7 @@ class Network
 
 		// From the pre-last layer : compute layers's nodes' delta
 		Layer nextLayer = layers.get(layers.size() - 1);
-		for (int i = layers.size() - 2; i >= 0; i--)
+		for (int i = layers.size() - 2; i >= 1; i--)
 		{
 			layers.get(i).computeDelta(nextLayer);
 			nextLayer = layers.get(i);
