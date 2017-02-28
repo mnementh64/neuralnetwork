@@ -35,7 +35,7 @@ class Network
 			previousLayer = layer;
 		}
 
-		return layers.get(layers.size() - 1).getOutput();
+		return layers.get(layers.size() - 1).output();
 	}
 
 	void retroPropagateError(List<Float> expectedValues) throws Exception
@@ -71,13 +71,13 @@ class Network
 	}
 
 	/**
-	 * Get a layer size
+	 * Get a layer getNbNodes
 	 * @param layerIndex : 0 based index
 	 * @return
 	 */
 	int getLayerSize(int layerIndex)
 	{
-		return layers.get(layerIndex).size();
+		return layers.get(layerIndex).getNbNodes();
 	}
 
 	int getInputSize()

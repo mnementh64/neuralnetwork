@@ -17,8 +17,8 @@ public class OutputLayer extends Layer
 
 	public void computeError(List<Float> expectedValues) throws Exception
 	{
-		if (expectedValues.size() != size())
-			throw new Exception("Expected values are bad sized for the output layer : get " + expectedValues.size() + " items and expected " + size());
+		if (expectedValues.size() != getNbNodes())
+			throw new Exception("Expected values are bad sized for the output layer : get " + expectedValues.size() + " items and expected " + getNbNodes());
 
 		IntStream.range(0, expectedValues.size())
 				.forEach(i -> nodes.get(i).delta = expectedValues.get(i) - nodes.get(i).value);

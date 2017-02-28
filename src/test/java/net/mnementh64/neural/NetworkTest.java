@@ -50,8 +50,8 @@ public class NetworkTest
 		Network network = new Network.Builder()
 				.setWeightInitFunction(WeightInitFunction.UNIT)
 				.addLayer(2)
-				.addLayer(3, ActivationFunction.SIGMOID)
-				.addLayer(1, ActivationFunction.SIGMOID)
+				.addLayer(3, ActivationFunction.IDENTITY)
+				.addLayer(1, ActivationFunction.IDENTITY)
 				.build();
 
 		List<Float> input = Arrays.asList(2f, 3f);

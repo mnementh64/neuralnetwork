@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -23,6 +24,7 @@ public abstract class Layer
 	/**
 	 *  ordered collection of nodes
 	 */
+	@JsonIgnore
 	List<Node> nodes;
 	/**
 	 * Activation function of all nodes : sigmoide, hyperbolic tangent, ...
@@ -44,9 +46,7 @@ public abstract class Layer
 		this.activationFunction = activationFunction;
 
 		// create nodes
-		nodes = new ArrayList<>(nbNodes);
-		IntStream.rangeClosed(1, nbNodes)
-				.forEach(i -> nodes.add(new Node()));
+		setNbNodes(nbNodes);
 	}
 
 	public void linkTo(Layer nextLayer, WeightInitFunction weightInitFunction) throws Exception
@@ -56,8 +56,8 @@ public abstract class Layer
 
 	public void init(List<Float> input) throws Exception
 	{
-		if (input.size() != size())
-			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + size());
+		if (input.size() != getNbNodes())
+			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + getNbNodes());
 
 		IntStream.range(0, input.size())
 				.forEach(i -> nodes.get(i).value = input.get(i));
@@ -91,7 +91,7 @@ public abstract class Layer
 		{
 			Node node = nodes.get(i);
 
-			for (int j = 0; j < nextLayer.size(); j++)
+			for (int j = 0; j < nextLayer.getNbNodes(); j++)
 			{
 				float nextDelta = nextLayer.getDelta(j);
 				weightsToNext[i][j] += learningRate * node.value * nextDelta;
@@ -99,17 +99,23 @@ public abstract class Layer
 		}
 	}
 
-	@com.fasterxml.jackson.annotation.JsonIgnore
-	public List<Float> getOutput()
+	public List<Float> output()
 	{
 		return nodes.stream()
 				.map(n -> n.value)
 				.collect(Collectors.toList());
 	}
 
-	public int size()
+	public int getNbNodes()
 	{
 		return nodes.size();
+	}
+
+	public void setNbNodes(int nbNodes)
+	{
+		nodes = new ArrayList<>(nbNodes);
+		IntStream.rangeClosed(1, nbNodes)
+				.forEach(i -> nodes.add(new Node()));
 	}
 
 	private float getDelta(int j) throws Exception
