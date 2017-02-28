@@ -9,14 +9,16 @@ import net.mnementh64.neural.layer.InputLayer;
 import net.mnementh64.neural.layer.Layer;
 import net.mnementh64.neural.layer.OutputLayer;
 import net.mnementh64.neural.layer.WeightInitFunction;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 class Network
 {
+	@JsonProperty
+	List<Layer> layers = new ArrayList<>();
+	@JsonProperty
+	float learningRate = 0.01f;
 
-	private List<Layer> layers = new ArrayList<>();
-	private float learningRate = 0.01f;
-
-	private Network()
+	public Network()
 	{
 	}
 

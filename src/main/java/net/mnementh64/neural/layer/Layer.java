@@ -5,9 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import net.mnementh64.neural.Node;
 import net.mnementh64.neural.WeightUtils;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+{ @JsonSubTypes.Type(value = InputLayer.class), @JsonSubTypes.Type(value = HiddenLayer.class), @JsonSubTypes.Type(value = OutputLayer.class), })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Layer
 {
 
@@ -18,13 +27,19 @@ public abstract class Layer
 	/**
 	 * Activation function of all nodes : sigmoide, hyperbolic tangent, ...
 	 */
-	public ActivationFunction activationFunction;
+	@JsonProperty
+	ActivationFunction activationFunction;
 	/**
 	 * weights between layer nodes and next layer nodes
 	 */
+	@JsonProperty
 	float[][] weightsToNext;
 
-	protected Layer(ActivationFunction activationFunction, int nbNodes)
+	Layer()
+	{
+	}
+
+	Layer(ActivationFunction activationFunction, int nbNodes)
 	{
 		this.activationFunction = activationFunction;
 
@@ -84,6 +99,7 @@ public abstract class Layer
 		}
 	}
 
+	@com.fasterxml.jackson.annotation.JsonIgnore
 	public List<Float> getOutput()
 	{
 		return nodes.stream()
@@ -118,8 +134,7 @@ public abstract class Layer
 				return input;
 
 			case SIGMOID:
-				// TODO
-				return input;
+				return sigmoide(input);
 		}
 		throw new Exception("Unsupported activation function : " + activationFunction);
 	}
@@ -132,10 +147,14 @@ public abstract class Layer
 				return 1;
 
 			case SIGMOID:
-				// TODO
-				return input;
+				return sigmoide(input) * (1.0f - sigmoide(input));
 		}
 		throw new Exception("Unsupported derivative activation function : " + activationFunction);
+	}
+
+	private float sigmoide(float x)
+	{
+		return (float) (1.0 / (1.0 + Math.exp(-x)));
 	}
 
 	private float computeOutputToNode(int nextLayerNodeIndex) throws Exception
