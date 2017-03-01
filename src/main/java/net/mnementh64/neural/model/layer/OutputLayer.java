@@ -1,4 +1,6 @@
-package net.mnementh64.neural.layer;
+package net.mnementh64.neural.model.layer;
+
+import net.mnementh64.neural.model.ActivationFunction;
 
 import java.util.List;
 import java.util.stream.IntStream;

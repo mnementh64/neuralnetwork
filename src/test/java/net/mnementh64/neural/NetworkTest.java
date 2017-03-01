@@ -11,8 +11,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mnementh64.neural.layer.ActivationFunction;
-import net.mnementh64.neural.layer.WeightInitFunction;
+import net.mnementh64.neural.model.ActivationFunction;
+import net.mnementh64.neural.model.DataRow;
+import net.mnementh64.neural.model.NetworkRunStats;
+import net.mnementh64.neural.model.WeightInitFunction;
 
 public class NetworkTest
 {
@@ -118,7 +120,7 @@ public class NetworkTest
 	}
 
 	@Test
-	public void sherbrookRetroPropagationDeltaTest() throws Exception
+	public void sherbrookRetroPropagationTest() throws Exception
 	{
 		String descriptor = TestUtils.loadResource("sherbrook1.json");
 		ObjectMapper mapper = new ObjectMapper();
@@ -135,6 +137,22 @@ public class NetworkTest
 		System.out.println(json);
 		String expectedJson = TestUtils.loadResource("sherbrook1-step1.json");
 		Assert.assertTrue(json.equals(expectedJson));
+	}
+
+	@Test
+	public void sherbrookRun1Test() throws Exception
+	{
+		String descriptor = TestUtils.loadResource("sherbrook1.json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+		Network network = mapper.readValue(descriptor, Network.class);
+
+		DataRow dataRow1 = new DataRow(Arrays.asList(2f, -1f), Collections.singletonList(1.0f));
+		DataRow dataRow2 = new DataRow(Arrays.asList(3f, -2f), Collections.singletonList(1.5f));
+		NetworkRunStats stats = network.run(Arrays.asList(dataRow1, dataRow2), 0.5f, 1000, 1);
+
+		Assert.assertTrue(stats.nbIterations >= 300);
+		Assert.assertTrue(stats.error == 0);
 	}
 
 }

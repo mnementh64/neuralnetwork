@@ -1,4 +1,4 @@
-package net.mnementh64.neural;
+package net.mnementh64.neural.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

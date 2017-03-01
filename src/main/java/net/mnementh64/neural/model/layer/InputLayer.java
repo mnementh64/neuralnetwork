@@ -1,4 +1,4 @@
-package net.mnementh64.neural.layer;
+package net.mnementh64.neural.model.layer;
 
 public class InputLayer extends Layer
 {

@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mnementh64.neural.layer.ActivationFunction;
-import net.mnementh64.neural.layer.WeightInitFunction;
+import net.mnementh64.neural.model.ActivationFunction;
+import net.mnementh64.neural.model.WeightInitFunction;
 
 public class NetworkSaveAndLoadTest
 {

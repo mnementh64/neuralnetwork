@@ -1,4 +1,4 @@
-package net.mnementh64.neural.layer;
+package net.mnementh64.neural.model.layer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import net.mnementh64.neural.Node;
-import net.mnementh64.neural.WeightUtils;
+import net.mnementh64.neural.model.ActivationFunction;
+import net.mnementh64.neural.model.Node;
+import net.mnementh64.neural.utils.WeightUtils;
+import net.mnementh64.neural.model.WeightInitFunction;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(

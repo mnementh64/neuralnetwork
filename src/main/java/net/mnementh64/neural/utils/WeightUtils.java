@@ -1,8 +1,8 @@
-package net.mnementh64.neural;
+package net.mnementh64.neural.utils;
 
 import java.util.Random;
 
-import net.mnementh64.neural.layer.WeightInitFunction;
+import net.mnementh64.neural.model.WeightInitFunction;
 
 public class WeightUtils
 {

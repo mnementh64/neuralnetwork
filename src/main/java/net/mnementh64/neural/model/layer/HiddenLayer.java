@@ -1,4 +1,6 @@
-package net.mnementh64.neural.layer;
+package net.mnementh64.neural.model.layer;
+
+import net.mnementh64.neural.model.ActivationFunction;
 
 public class HiddenLayer extends Layer
 {

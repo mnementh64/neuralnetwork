@@ -1,4 +1,4 @@
-package net.mnementh64.neural.layer;
+package net.mnementh64.neural.model;
 
 public enum ActivationFunction
 {
