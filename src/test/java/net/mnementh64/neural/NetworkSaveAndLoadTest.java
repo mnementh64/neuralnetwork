@@ -1,10 +1,10 @@
 package net.mnementh64.neural;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.mnementh64.neural.model.ActivationFunction;

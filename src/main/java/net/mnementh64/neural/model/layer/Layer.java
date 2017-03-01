@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import net.mnementh64.neural.model.ActivationFunction;
 import net.mnementh64.neural.model.Node;
-import net.mnementh64.neural.utils.WeightUtils;
 import net.mnementh64.neural.model.WeightInitFunction;
+import net.mnementh64.neural.utils.WeightUtils;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(

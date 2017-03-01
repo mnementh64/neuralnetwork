@@ -149,7 +149,7 @@ public class NetworkTest
 
 		DataRow dataRow1 = new DataRow(Arrays.asList(2f, -1f), Collections.singletonList(1.0f));
 		DataRow dataRow2 = new DataRow(Arrays.asList(3f, -2f), Collections.singletonList(1.5f));
-		NetworkRunStats stats = network.run(Arrays.asList(dataRow1, dataRow2), 0.5f, 1000, 1);
+		NetworkRunStats stats = NetworkRunner.of(network).run(Arrays.asList(dataRow1, dataRow2), 0.5f, 1000, 1);
 
 		Assert.assertTrue(stats.nbIterations >= 300);
 		Assert.assertTrue(stats.error == 0);

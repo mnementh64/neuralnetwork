@@ -5,7 +5,9 @@ import net.mnementh64.neural.model.ActivationFunction;
 public class HiddenLayer extends Layer
 {
 
-	public HiddenLayer() {}
+	public HiddenLayer()
+	{
+	}
 
 	public HiddenLayer(ActivationFunction activationFunction, int nbNodes)
 	{
