@@ -10,14 +10,14 @@ import net.mnementh64.neural.model.DataRow;
 import net.mnementh64.neural.model.NetworkRunStats;
 import net.mnementh64.neural.utils.DataRowUtils;
 
-class NetworkRunner
+public class NetworkRunner
 {
 
 	private final static Logger L = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	private Network network;
 
-	static NetworkRunner of(Network network)
+	public static NetworkRunner of(Network network)
 	{
 		NetworkRunner runner = new NetworkRunner();
 		runner.network = network;
@@ -25,7 +25,7 @@ class NetworkRunner
 		return runner;
 	}
 
-	NetworkRunStats run(List<DataRow> allData, float percentTraining, int maxIterations, int maxOvertraining) throws Exception
+	public NetworkRunStats run(List<DataRow> allData, float percentTraining, int maxIterations, int maxOvertraining) throws Exception
 	{
 		int nbIterations = 0;
 		float totalError = Float.POSITIVE_INFINITY;

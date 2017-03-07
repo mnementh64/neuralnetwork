@@ -16,7 +16,7 @@ import net.mnementh64.neural.model.layer.InputLayer;
 import net.mnementh64.neural.model.layer.Layer;
 import net.mnementh64.neural.model.layer.OutputLayer;
 
-class Network
+public class Network
 {
 
 	public final static Logger L = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -30,7 +30,7 @@ class Network
 	{
 	}
 
-	List<Float> feedForward(List<Float> input) throws Exception
+	public List<Float> feedForward(List<Float> input) throws Exception
 	{
 		// feed first layer with input values
 		layers.get(0).init(input);
@@ -46,7 +46,7 @@ class Network
 		return layers.get(layers.size() - 1).output();
 	}
 
-	void retroPropagateError(List<Float> expectedValues) throws Exception
+	public void retroPropagateError(List<Float> expectedValues) throws Exception
 	{
 		// compute error for the last layer
 		((OutputLayer) layers.get(layers.size() - 1)).computeError(expectedValues);
@@ -68,12 +68,7 @@ class Network
 		}
 	}
 
-	private void setLayers(List<Layer> layers)
-	{
-		this.layers = layers;
-	}
-
-	int size()
+	public int size()
 	{
 		return layers.size();
 	}
@@ -83,22 +78,27 @@ class Network
 	 * @param layerIndex : 0 based index
 	 * @return
 	 */
-	int getLayerSize(int layerIndex)
+	public int getLayerSize(int layerIndex)
 	{
 		return layers.get(layerIndex).getNbNodes();
 	}
 
-	int getInputSize()
+	public int getInputSize()
 	{
 		return getLayerSize(0);
 	}
 
-	int getOutputSize()
+	public int getOutputSize()
 	{
 		return getLayerSize(size() - 1);
 	}
 
-	static class Builder
+	private void setLayers(List<Layer> layers)
+	{
+		this.layers = layers;
+	}
+
+	public static class Builder
 	{
 
 		private List<LayerDescriptor> layerDescriptors = new ArrayList<>();
@@ -112,19 +112,19 @@ class Network
 			ActivationFunction activationFunction;
 		}
 
-		Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
+		public Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
 		{
 			this.weightInitFunction = weightInitFunction;
 			return this;
 		}
 
-		Builder setLearningRate(float learningRate)
+		public Builder setLearningRate(float learningRate)
 		{
 			this.learningRate = learningRate;
 			return this;
 		}
 
-		Builder addLayer(int nbNodes)
+		public Builder addLayer(int nbNodes)
 		{
 			LayerDescriptor layerDescriptor = new LayerDescriptor();
 			layerDescriptor.nbNodes = nbNodes;
@@ -132,7 +132,7 @@ class Network
 			return this;
 		}
 
-		Builder addLayer(int nbNodes, ActivationFunction activationFunction)
+		public Builder addLayer(int nbNodes, ActivationFunction activationFunction)
 		{
 			LayerDescriptor layerDescriptor = new LayerDescriptor();
 			layerDescriptor.nbNodes = nbNodes;
@@ -141,7 +141,7 @@ class Network
 			return this;
 		}
 
-		Network build() throws Exception
+		public Network build() throws Exception
 		{
 			checkRequirements();
 
