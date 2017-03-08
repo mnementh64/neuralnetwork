@@ -22,6 +22,8 @@ public class NetworkRunner
 		NetworkRunner runner = new NetworkRunner();
 		runner.network = network;
 
+
+
 		return runner;
 	}
 
