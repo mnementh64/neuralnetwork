@@ -24,13 +24,13 @@ public class Network
 	@JsonProperty
 	List<Layer> layers = new ArrayList<>();
 	@JsonProperty
-	float learningRate = 0.01f;
+	double learningRate = 0.01f;
 
 	public Network()
 	{
 	}
 
-	public List<Float> feedForward(List<Float> input) throws Exception
+	public List<Double> feedForward(List<Double> input) throws Exception
 	{
 		// feed first layer with input values
 		layers.get(0).init(input);
@@ -46,7 +46,7 @@ public class Network
 		return layers.get(layers.size() - 1).output();
 	}
 
-	public void retroPropagateError(List<Float> expectedValues) throws Exception
+	public void retroPropagateError(List<Double> expectedValues) throws Exception
 	{
 		// compute error for the last layer
 		((OutputLayer) layers.get(layers.size() - 1)).computeError(expectedValues);
@@ -83,16 +83,6 @@ public class Network
 		return layers.get(layerIndex).getNbNodes();
 	}
 
-	public int getInputSize()
-	{
-		return getLayerSize(0);
-	}
-
-	public int getOutputSize()
-	{
-		return getLayerSize(size() - 1);
-	}
-
 	private void setLayers(List<Layer> layers)
 	{
 		this.layers = layers;
@@ -103,7 +93,7 @@ public class Network
 
 		private List<LayerDescriptor> layerDescriptors = new ArrayList<>();
 		private WeightInitFunction weightInitFunction;
-		private float learningRate = 0.01f;
+		private double learningRate = 0.01f;
 
 		private class LayerDescriptor
 		{

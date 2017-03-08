@@ -37,7 +37,7 @@ public abstract class Layer
 	 * weights between layer nodes and next layer nodes
 	 */
 	@JsonProperty
-	float[][] weightsToNext;
+	double[][] weightsToNext;
 
 	Layer()
 	{
@@ -56,7 +56,7 @@ public abstract class Layer
 		weightsToNext = WeightUtils.init(this.nodes.size(), nextLayer.nodes.size(), weightInitFunction);
 	}
 
-	public void init(List<Float> input) throws Exception
+	public void init(List<Double> input) throws Exception
 	{
 		if (input.size() != getNbNodes())
 			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + getNbNodes());
@@ -82,12 +82,12 @@ public abstract class Layer
 		for (int j = 0; j < nodes.size(); j++)
 		{
 			Node node = nodes.get(j);
-			float delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
+			double delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
 			node.delta = delta * applyActivationDerivativeFunction(node.input, activationFunction);
 		}
 	}
 
-	public void adjustWeights(Layer nextLayer, float learningRate) throws Exception
+	public void adjustWeights(Layer nextLayer, double learningRate) throws Exception
 	{
 		for (int i = 0; i < nodes.size(); i++)
 		{
@@ -95,13 +95,13 @@ public abstract class Layer
 
 			for (int j = 0; j < nextLayer.getNbNodes(); j++)
 			{
-				float nextDelta = nextLayer.getDelta(j);
+				double nextDelta = nextLayer.getDelta(j);
 				weightsToNext[i][j] += learningRate * node.value * nextDelta;
 			}
 		}
 	}
 
-	public List<Float> output()
+	public List<Double> output()
 	{
 		return nodes.stream()
 				.map(n -> n.value)
@@ -120,21 +120,21 @@ public abstract class Layer
 				.forEach(i -> nodes.add(new Node()));
 	}
 
-	private float getDelta(int j) throws Exception
+	private double getDelta(int j) throws Exception
 	{
 		return nodes.get(j).delta;
 	}
 
-	private float computeWeightedDelta(float[] weights) throws Exception
+	private double computeWeightedDelta(double[] weights) throws Exception
 	{
-		float value = 0;
+		double value = 0;
 		for (int i = 0; i < nodes.size(); i++)
 			value += weights[i] * nodes.get(i).delta;
 
 		return value;
 	}
 
-	private float applyActivationFunction(float input, ActivationFunction activationFunction) throws Exception
+	private double applyActivationFunction(double input, ActivationFunction activationFunction) throws Exception
 	{
 		switch (activationFunction)
 		{
@@ -143,11 +143,14 @@ public abstract class Layer
 
 			case SIGMOID:
 				return sigmoide(input);
+
+			case TANH:
+				return Math.tanh(input);
 		}
 		throw new Exception("Unsupported activation function : " + activationFunction);
 	}
 
-	private float applyActivationDerivativeFunction(float input, ActivationFunction activationFunction) throws Exception
+	private double applyActivationDerivativeFunction(double input, ActivationFunction activationFunction) throws Exception
 	{
 		switch (activationFunction)
 		{
@@ -156,18 +159,21 @@ public abstract class Layer
 
 			case SIGMOID:
 				return sigmoide(input) * (1.0f - sigmoide(input));
+
+			case TANH:
+				return 1 / (Math.cosh(input) * Math.cosh(input));
 		}
 		throw new Exception("Unsupported derivative activation function : " + activationFunction);
 	}
 
-	private float sigmoide(float x)
+	private double sigmoide(double x)
 	{
-		return (float) (1.0 / (1.0 + Math.exp(-x)));
+		return 1.0 / (1.0 + Math.exp(-x));
 	}
 
-	private float computeOutputToNode(int nextLayerNodeIndex) throws Exception
+	private double computeOutputToNode(int nextLayerNodeIndex) throws Exception
 	{
-		float value = 0;
+		double value = 0;
 
 		for (int i = 0; i < nodes.size(); i++)
 			value += nodes.get(i).value * weightsToNext[i][nextLayerNodeIndex];

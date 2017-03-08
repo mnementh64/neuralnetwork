@@ -9,15 +9,15 @@ public class Node
 	 * input value before activation function application
 	 */
 	@JsonIgnore
-	public float input;
+	public double input;
 	/**
 	 * node value after activation function application
 	 */
-	public float value;
+	public double value;
 	/**
 	 * error retropropagation value at this node
 	 */
 	@JsonIgnore
-	public float delta;
+	public double delta;
 
 }

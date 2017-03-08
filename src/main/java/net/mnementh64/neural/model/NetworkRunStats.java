@@ -7,7 +7,7 @@ public class NetworkRunStats
 	public int generalizeSetSize;
 	public int nbIterations;
 	public int overTrainingOccurences;
-	public float error;
-	public float avgError;
-	public float learningRate;
+	public double error;
+	public double avgError;
+	public double learningRate;
 }

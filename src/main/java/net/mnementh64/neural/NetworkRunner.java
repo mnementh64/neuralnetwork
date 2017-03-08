@@ -22,20 +22,18 @@ public class NetworkRunner
 		NetworkRunner runner = new NetworkRunner();
 		runner.network = network;
 
-
-
 		return runner;
 	}
 
-	public NetworkRunStats run(List<DataRow> allData, float percentTraining, int maxIterations, int maxOvertraining) throws Exception
+	public NetworkRunStats run(List<DataRow> allData, double percentTraining, int maxIterations, int maxOvertraining) throws Exception
 	{
 		int nbIterations = 0;
-		float totalError = Float.POSITIVE_INFINITY;
-		float oldError = Float.POSITIVE_INFINITY;
-		float totalGeneralizeError = Float.POSITIVE_INFINITY;
-		float oldGeneralizeError = Float.POSITIVE_INFINITY;
+		double totalError = Double.POSITIVE_INFINITY;
+		double oldError = Double.POSITIVE_INFINITY;
+		double totalGeneralizeError = Double.POSITIVE_INFINITY;
+		double oldGeneralizeError = Double.POSITIVE_INFINITY;
 		int nbOverTraining = 0;
-		float learningRate = network.learningRate;
+		double learningRate = network.learningRate;
 		NetworkRunStats networkRunStats = new NetworkRunStats();
 
 		// separate training / generalize sets
@@ -56,7 +54,7 @@ public class NetworkRunner
 			// training
 			for (DataRow data : trainingSet)
 			{
-				List<Float> output = network.feedForward(data.input);
+				List<Double> output = network.feedForward(data.input);
 				network.retroPropagateError(data.expectedOutput);
 
 				for (int nb = 0; nb < output.size(); nb++)
@@ -69,7 +67,7 @@ public class NetworkRunner
 			// generalize
 			for (DataRow data : generalizeSet)
 			{
-				List<Float> output = network.feedForward(data.input);
+				List<Double> output = network.feedForward(data.input);
 				network.retroPropagateError(data.expectedOutput);
 
 				for (int nb = 0; nb < output.size(); nb++)
@@ -83,7 +81,10 @@ public class NetworkRunner
 			nbOverTraining += totalGeneralizeError > oldGeneralizeError ? 1 : 0;
 
 			// Learning rate adjustement ?
-			learningRate /= totalError > oldError ? 2.0 : 1.0;
+			learningRate /= totalError > oldError ? 1.2 : 1.0;
+
+			L.info("Iteration n°" + nbIterations + " - total error : " + totalError + " - Generalisation : " + totalGeneralizeError
+					+ " - Learning rate : " + learningRate);
 
 			// check stop conditions
 			nbIterations++;
@@ -107,45 +108,20 @@ public class NetworkRunner
 			}
 		}
 
-		networkRunStats.avgError = (float) Math.sqrt(totalError / trainingSet.size());
-		networkRunStats.error = (float) totalError;
+		// update the network's learning rate
+		network.learningRate = learningRate;
+
+		networkRunStats.avgError = Math.sqrt(totalError / trainingSet.size());
+		networkRunStats.error = totalError;
 		networkRunStats.nbIterations = nbIterations;
 		networkRunStats.overTrainingOccurences = nbOverTraining;
 		networkRunStats.learningRate = learningRate;
 
-//		System.out.println("Expected --> calculated");
-//		{
-//			PointND pointTest = new PointND(
-//					"0.3333333333333333\t0.4791666666666667\t0.5\t0.3333333333333333\t0.4666666666666667\t0.0\t0.6\t0.5\t0.9280434782608695",
-//					1);
-//			double[] sorties = reseau.Evaluer(pointTest);
-//			for (int i = 0; i < 1; i++)
-//			{
-//				System.out.println(pointTest.sorties[i] * 300000 + " --> " + sorties[i] * 300000);
-//			}
-//			System.out.println("Efficacité du réseau : " + (nbIterations / erreurTotale));
-//			if (erreurTotale < erreurMin)
-//			{
-//				erreurMin = erreurTotale;
-//				double distance = pointTest.entrees[1] * 6000;
-//				double tempsExpected = pointTest.sorties[0] * distance * 80;
-//				double tempsPredicted = sorties[0] * distance * 80;
-//				writeFile("Iteration " + nbIterations + ", get error " + erreurMin + " and prediction is " + tempsPredicted + " compared to "
-//						+ tempsExpected + " (Efficiency : " + (nbIterations / erreurTotale) + ")\n",
-//						"/home/scaillet/workspace/IdeaProjects/perso/sniffhrstats/src/main/resources/reseauxNeurones/cheval/VIENNOISE.results.txt");
-//			}
-//		}
-//
-////		if (nbSurapprentissage >= MAX_SUR_APPRENTISSAGE)
-////		{
-////			System.out.println("Surapprentissage  --> restart ...");
-////			init();
-////			Lancer();
-////		}
-//
-//		//Create plot with out data
-//		plotDataset(donnees, reseau);
-
 		return networkRunStats;
+	}
+
+	public List<Double> predict(DataRow data) throws Exception
+	{
+		return network.feedForward(data.input);
 	}
 }

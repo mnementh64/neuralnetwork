@@ -46,7 +46,7 @@ public class NetworkTest
 				.addLayer(1, ActivationFunction.SIGMOID)
 				.build();
 
-		List<Float> input = Collections.singletonList(3f);
+		List<Double> input = Collections.singletonList(3.0);
 		network.feedForward(input);
 	}
 
@@ -60,8 +60,8 @@ public class NetworkTest
 				.addLayer(1, ActivationFunction.IDENTITY)
 				.build();
 
-		List<Float> input = Arrays.asList(2f, 3f);
-		List<Float> output = network.feedForward(input);
+		List<Double> input = Arrays.asList(2.0, 3.0);
+		List<Double> output = network.feedForward(input);
 
 		Assert.assertNotNull(output);
 		Assert.assertTrue(output.size() == 1);
@@ -81,8 +81,8 @@ public class NetworkTest
 				.addLayer(23, ActivationFunction.SIGMOID)
 				.build();
 
-		List<Float> input = Arrays.asList(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f);
-		List<Float> output = network.feedForward(input);
+		List<Double> input = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0);
+		List<Double> output = network.feedForward(input);
 
 		Assert.assertNotNull(output);
 		Assert.assertTrue(output.size() == 23);
@@ -98,9 +98,9 @@ public class NetworkTest
 				.addLayer(1, ActivationFunction.SIGMOID)
 				.build();
 
-		List<Float> input = Arrays.asList(2f, 3f);
+		List<Double> input = Arrays.asList(2.0, 3.0);
 		network.feedForward(input);
-		List<Float> expectedValues = Arrays.asList(10f, 10f);
+		List<Double> expectedValues = Arrays.asList(10.0, 10.0);
 		network.retroPropagateError(expectedValues);
 	}
 
@@ -112,8 +112,8 @@ public class NetworkTest
 		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 		Network network = mapper.readValue(descriptor, Network.class);
 
-		List<Float> input = Arrays.asList(2f, -1f);
-		List<Float> output = network.feedForward(input);
+		List<Double> input = Arrays.asList(2.0, -1.0);
+		List<Double> output = network.feedForward(input);
 
 		Assert.assertNotNull(output);
 		Assert.assertEquals(0.648, output.get(0), 0.001);
@@ -127,10 +127,10 @@ public class NetworkTest
 		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 		Network network = mapper.readValue(descriptor, Network.class);
 
-		List<Float> input = Arrays.asList(2f, -1f);
-		List<Float> output = network.feedForward(input);
+		List<Double> input = Arrays.asList(2.0, -1.0);
+		List<Double> output = network.feedForward(input);
 
-		List<Float> expectedValues = Collections.singletonList(1f);
+		List<Double> expectedValues = Collections.singletonList(1.0);
 		network.retroPropagateError(expectedValues);
 
 		String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(network);
@@ -147,9 +147,9 @@ public class NetworkTest
 		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 		Network network = mapper.readValue(descriptor, Network.class);
 
-		DataRow dataRow1 = new DataRow(Arrays.asList(2f, -1f), Collections.singletonList(1.0f));
-		DataRow dataRow2 = new DataRow(Arrays.asList(3f, -2f), Collections.singletonList(1.5f));
-		NetworkRunStats stats = NetworkRunner.of(network).run(Arrays.asList(dataRow1, dataRow2), 0.5f, 1000, 1);
+		DataRow dataRow1 = new DataRow(Arrays.asList(2.0, -1.0), Collections.singletonList(1.0));
+		DataRow dataRow2 = new DataRow(Arrays.asList(3.0, -2.0), Collections.singletonList(1.5));
+		NetworkRunStats stats = NetworkRunner.of(network).run(Arrays.asList(dataRow1, dataRow2), 0.5, 1000, 1);
 
 		Assert.assertTrue(stats.nbIterations >= 300);
 		Assert.assertTrue(stats.error == 0);

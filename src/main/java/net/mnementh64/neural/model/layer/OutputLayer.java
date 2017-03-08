@@ -17,7 +17,7 @@ public class OutputLayer extends Layer
 		super(activationFunction == null ? ActivationFunction.SIGMOID : activationFunction, nbNodes);
 	}
 
-	public void computeError(List<Float> expectedValues) throws Exception
+	public void computeError(List<Double> expectedValues) throws Exception
 	{
 		if (expectedValues.size() != getNbNodes())
 			throw new Exception("Expected values are bad sized for the output layer : get " + expectedValues.size() + " items and expected " + getNbNodes());

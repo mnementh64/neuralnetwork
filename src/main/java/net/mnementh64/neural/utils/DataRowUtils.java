@@ -8,7 +8,7 @@ import net.mnementh64.neural.model.DataRow;
 public class DataRowUtils
 {
 
-	public static List<DataRow> extractTrainingDataRow(List<DataRow> data, float percentTraining) throws Exception
+	public static List<DataRow> extractTrainingDataRow(List<DataRow> data, double percentTraining) throws Exception
 	{
 		int limit = (int) Math.floor(data.size() * percentTraining);
 		return data.stream()
@@ -16,7 +16,7 @@ public class DataRowUtils
 				.collect(Collectors.toList());
 	}
 
-	public static List<DataRow> extractGeneralizeDataRow(List<DataRow> data, float percentTraining) throws Exception
+	public static List<DataRow> extractGeneralizeDataRow(List<DataRow> data, double percentTraining) throws Exception
 	{
 		int limitTraining = (int) Math.floor(data.size() * percentTraining);
 		return data.stream()

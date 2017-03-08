@@ -5,10 +5,10 @@ import java.util.List;
 public class DataRow
 {
 
-	public List<Float> input;
-	public List<Float> expectedOutput;
+	public List<Double> input;
+	public List<Double> expectedOutput;
 
-	public DataRow(List<Float> input, List<Float> expectedOutput)
+	public DataRow(List<Double> input, List<Double> expectedOutput)
 	{
 		this.input = input;
 		this.expectedOutput = expectedOutput;
