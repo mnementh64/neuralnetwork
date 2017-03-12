@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.mnementh64.neural.model.ActivationFunction;
-import net.mnementh64.neural.model.WeightInitFunction;
+import net.mnementh64.neural.model.activation.ActivationFunction;
+import net.mnementh64.neural.model.weight.WeightInitFunction;
 import net.mnementh64.neural.model.layer.HiddenLayer;
 import net.mnementh64.neural.model.layer.InputLayer;
 import net.mnementh64.neural.model.layer.Layer;

@@ -11,18 +11,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import net.mnementh64.neural.model.ActivationFunction;
 import net.mnementh64.neural.model.Node;
-import net.mnementh64.neural.model.WeightInitFunction;
-import net.mnementh64.neural.utils.WeightUtils;
+import net.mnementh64.neural.model.activation.ActivationFunction;
+import net.mnementh64.neural.model.weight.WeightInitFunction;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
-{ @JsonSubTypes.Type(value = InputLayer.class), @JsonSubTypes.Type(value = HiddenLayer.class), @JsonSubTypes.Type(value = OutputLayer.class), })
+{
+		@JsonSubTypes.Type(name = "INPUT", value = InputLayer.class),
+		@JsonSubTypes.Type(name = "HIDDEN", value = HiddenLayer.class),
+		@JsonSubTypes.Type(name = "OUTPUT", value = OutputLayer.class),
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Layer
 {
 
+	enum Type
+	{
+		INPUT, HIDDEN, OUTPUT
+	}
+
+	@JsonProperty
+	Type type;
 	/**
 	 *  ordered collection of nodes
 	 */
@@ -39,12 +49,14 @@ public abstract class Layer
 	@JsonProperty
 	double[][] weightsToNext;
 
-	Layer()
+	Layer(Type type)
 	{
+		this.type = type;
 	}
 
-	Layer(ActivationFunction activationFunction, int nbNodes)
+	Layer(Type type, ActivationFunction activationFunction, int nbNodes)
 	{
+		this.type = type;
 		this.activationFunction = activationFunction;
 
 		// create nodes
@@ -53,7 +65,7 @@ public abstract class Layer
 
 	public void linkTo(Layer nextLayer, WeightInitFunction weightInitFunction) throws Exception
 	{
-		weightsToNext = WeightUtils.init(this.nodes.size(), nextLayer.nodes.size(), weightInitFunction);
+		weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
 	}
 
 	public void init(List<Double> input) throws Exception
@@ -72,7 +84,7 @@ public abstract class Layer
 		{
 			Node node = nodes.get(j);
 			node.input = previousLayer.computeOutputToNode(j);
-			node.value = applyActivationFunction(node.input, activationFunction);
+			node.value = activationFunction.apply(node.input);
 		}
 	}
 
@@ -83,7 +95,7 @@ public abstract class Layer
 		{
 			Node node = nodes.get(j);
 			double delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
-			node.delta = delta * applyActivationDerivativeFunction(node.input, activationFunction);
+			node.delta = delta * activationFunction.applyDerivative(node.input);
 		}
 	}
 
@@ -132,43 +144,6 @@ public abstract class Layer
 			value += weights[i] * nodes.get(i).delta;
 
 		return value;
-	}
-
-	private double applyActivationFunction(double input, ActivationFunction activationFunction) throws Exception
-	{
-		switch (activationFunction)
-		{
-			case IDENTITY:
-				return input;
-
-			case SIGMOID:
-				return sigmoide(input);
-
-			case TANH:
-				return Math.tanh(input);
-		}
-		throw new Exception("Unsupported activation function : " + activationFunction);
-	}
-
-	private double applyActivationDerivativeFunction(double input, ActivationFunction activationFunction) throws Exception
-	{
-		switch (activationFunction)
-		{
-			case IDENTITY:
-				return 1;
-
-			case SIGMOID:
-				return sigmoide(input) * (1.0f - sigmoide(input));
-
-			case TANH:
-				return 1 / (Math.cosh(input) * Math.cosh(input));
-		}
-		throw new Exception("Unsupported derivative activation function : " + activationFunction);
-	}
-
-	private double sigmoide(double x)
-	{
-		return 1.0 / (1.0 + Math.exp(-x));
 	}
 
 	private double computeOutputToNode(int nextLayerNodeIndex) throws Exception

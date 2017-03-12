@@ -1,16 +1,20 @@
 {
   "layers" : [ {
-    "type" : "net.mnementh64.neural.model.layer.InputLayer",
+    "type" : "INPUT",
     "weightsToNext" : [ [ 1.0, 1.0, 1.0, 1.0, 1.0 ], [ 1.0, 1.0, 1.0, 1.0, 1.0 ] ],
     "nbNodes" : 2
   }, {
-    "type" : "net.mnementh64.neural.model.layer.HiddenLayer",
-    "activationFunction" : "SIGMOID",
+    "type" : "HIDDEN",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
     "weightsToNext" : [ [ 1.0 ], [ 1.0 ], [ 1.0 ], [ 1.0 ], [ 1.0 ] ],
     "nbNodes" : 5
   }, {
-    "type" : "net.mnementh64.neural.model.layer.OutputLayer",
-    "activationFunction" : "SIGMOID",
+    "type" : "OUTPUT",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
     "nbNodes" : 1
   } ],
   "learningRate" : 0.5

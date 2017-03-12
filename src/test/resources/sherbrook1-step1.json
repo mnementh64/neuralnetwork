@@ -1,21 +1,27 @@
 {
   "layers" : [ {
-    "type" : "net.mnementh64.neural.model.layer.InputLayer",
+    "type" : "INPUT",
     "weightsToNext" : [ [ 0.5057510527382851, -0.9775499491928076 ], [ 1.4971244736308573, -2.011225025403596 ] ],
     "nbNodes" : 2
   }, {
-    "type" : "net.mnementh64.neural.model.layer.HiddenLayer",
-    "activationFunction" : "SIGMOID",
+    "type" : "HIDDEN",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
     "weightsToNext" : [ [ 1.0015268707067593, -1.0030927505680804 ], [ 3.002022127459301, -4.004095917107322 ] ],
     "nbNodes" : 2
   }, {
-    "type" : "net.mnementh64.neural.model.layer.HiddenLayer",
-    "activationFunction" : "SIGMOID",
+    "type" : "HIDDEN",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
     "weightsToNext" : [ [ 1.0304831970552182 ], [ -2.9970160466463986 ] ],
     "nbNodes" : 2
   }, {
-    "type" : "net.mnementh64.neural.model.layer.OutputLayer",
-    "activationFunction" : "SIGMOID",
+    "type" : "OUTPUT",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
     "nbNodes" : 1
   } ],
   "learningRate" : 0.1

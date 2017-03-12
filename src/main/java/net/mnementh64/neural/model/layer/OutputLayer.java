@@ -3,18 +3,20 @@ package net.mnementh64.neural.model.layer;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import net.mnementh64.neural.model.ActivationFunction;
+import net.mnementh64.neural.model.activation.ActivationFunction;
+import net.mnementh64.neural.model.activation.ActivationUtils;
 
 public class OutputLayer extends Layer
 {
 
 	public OutputLayer()
 	{
+		super(Type.OUTPUT);
 	}
 
 	public OutputLayer(ActivationFunction activationFunction, int nbNodes)
 	{
-		super(activationFunction == null ? ActivationFunction.SIGMOID : activationFunction, nbNodes);
+		super(Type.OUTPUT, activationFunction == null ? ActivationUtils.sigmoid : activationFunction, nbNodes);
 	}
 
 	public void computeError(List<Double> expectedValues) throws Exception

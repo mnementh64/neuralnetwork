@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.mnementh64.neural.model.activation.ActivationUtils;
+import net.mnementh64.neural.model.weight.WeightUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,10 +13,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mnementh64.neural.model.ActivationFunction;
+import net.mnementh64.neural.model.activation.ActivationFunction;
 import net.mnementh64.neural.model.DataRow;
 import net.mnementh64.neural.model.NetworkRunStats;
-import net.mnementh64.neural.model.WeightInitFunction;
 
 public class NetworkTest
 {
@@ -23,10 +24,10 @@ public class NetworkTest
 	public void networkBuildTest() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.addLayer(2)
-				.addLayer(5, ActivationFunction.SIGMOID)
-				.addLayer(1, ActivationFunction.SIGMOID)
+				.addLayer(5, ActivationUtils.sigmoid)
+				.addLayer(1, ActivationUtils.sigmoid)
 				.build();
 
 		Assert.assertTrue(network.size() == 3);
@@ -40,10 +41,10 @@ public class NetworkTest
 	public void networkRunTestBadInputSize() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.addLayer(2)
-				.addLayer(3, ActivationFunction.SIGMOID)
-				.addLayer(1, ActivationFunction.SIGMOID)
+				.addLayer(3, ActivationUtils.sigmoid)
+				.addLayer(1, ActivationUtils.sigmoid)
 				.build();
 
 		List<Double> input = Collections.singletonList(3.0);
@@ -54,10 +55,10 @@ public class NetworkTest
 	public void networkFeedForwardTest() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.addLayer(2)
-				.addLayer(3, ActivationFunction.IDENTITY)
-				.addLayer(1, ActivationFunction.IDENTITY)
+				.addLayer(3, ActivationUtils.identity)
+				.addLayer(1, ActivationUtils.identity)
 				.build();
 
 		List<Double> input = Arrays.asList(2.0, 3.0);
@@ -72,13 +73,13 @@ public class NetworkTest
 	public void networkComplexFeedForwardTest() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.addLayer(10)
-				.addLayer(32, ActivationFunction.SIGMOID)
-				.addLayer(24, ActivationFunction.SIGMOID)
-				.addLayer(124, ActivationFunction.SIGMOID)
-				.addLayer(234, ActivationFunction.SIGMOID)
-				.addLayer(23, ActivationFunction.SIGMOID)
+				.addLayer(32, ActivationUtils.sigmoid)
+				.addLayer(24, ActivationUtils.sigmoid)
+				.addLayer(124, ActivationUtils.sigmoid)
+				.addLayer(234, ActivationUtils.sigmoid)
+				.addLayer(23, ActivationUtils.sigmoid)
 				.build();
 
 		List<Double> input = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0);
@@ -92,10 +93,10 @@ public class NetworkTest
 	public void networkRetroPropagateTestBadSize() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.addLayer(2)
-				.addLayer(3, ActivationFunction.SIGMOID)
-				.addLayer(1, ActivationFunction.SIGMOID)
+				.addLayer(3, ActivationUtils.sigmoid)
+				.addLayer(1, ActivationUtils.sigmoid)
 				.build();
 
 		List<Double> input = Arrays.asList(2.0, 3.0);

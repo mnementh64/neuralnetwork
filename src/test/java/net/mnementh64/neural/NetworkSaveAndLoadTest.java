@@ -1,5 +1,7 @@
 package net.mnementh64.neural;
 
+import net.mnementh64.neural.model.activation.ActivationUtils;
+import net.mnementh64.neural.model.weight.WeightUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,8 +9,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mnementh64.neural.model.ActivationFunction;
-import net.mnementh64.neural.model.WeightInitFunction;
+import net.mnementh64.neural.model.activation.ActivationFunction;
 
 public class NetworkSaveAndLoadTest
 {
@@ -17,11 +18,11 @@ public class NetworkSaveAndLoadTest
 	public void networkSaveTest() throws Exception
 	{
 		Network network = new Network.Builder()
-				.setWeightInitFunction(WeightInitFunction.UNIT)
+				.setWeightInitFunction(WeightUtils.unitFunction)
 				.setLearningRate(0.5f)
 				.addLayer(2)
-				.addLayer(5, ActivationFunction.SIGMOID)
-				.addLayer(1, ActivationFunction.SIGMOID)
+				.addLayer(5, ActivationUtils.sigmoid)
+				.addLayer(1, ActivationUtils.sigmoid)
 				.build();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);

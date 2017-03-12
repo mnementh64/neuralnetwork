@@ -5,12 +5,12 @@ public class InputLayer extends Layer
 
 	public InputLayer()
 	{
-		super();
+		super(Type.INPUT);
 	}
 
 	public InputLayer(int nbNodes)
 	{
-		super(null, nbNodes);
+		super(Type.INPUT, null, nbNodes);
 	}
 
 	@Override
