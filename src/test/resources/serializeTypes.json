@@ -2,7 +2,7 @@
   "layers" : [ {
     "type" : "INPUT",
     "weightInitFunction" : {
-      "type" : "UNIT"
+      "type" : "RANDOM_UNIFORM"
     },
     "weightsToNext" : [ [ 1.0, 1.0, 1.0, 1.0, 1.0 ], [ 1.0, 1.0, 1.0, 1.0, 1.0 ] ],
     "nbNodes" : 2
@@ -12,14 +12,14 @@
       "type" : "SIGMOID"
     },
     "weightInitFunction" : {
-      "type" : "UNIT"
+      "type" : "RANDOM_GAUSSIAN"
     },
     "weightsToNext" : [ [ 1.0 ], [ 1.0 ], [ 1.0 ], [ 1.0 ], [ 1.0 ] ],
     "nbNodes" : 5
   }, {
     "type" : "OUTPUT",
     "activationFunction" : {
-      "type" : "SIGMOID"
+      "type" : "TANH"
     },
     "nbNodes" : 1
   } ],

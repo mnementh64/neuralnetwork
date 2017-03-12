@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.mnementh64.neural.model.activation.ActivationFunction;
-import net.mnementh64.neural.model.weight.WeightInitFunction;
 import net.mnementh64.neural.model.layer.HiddenLayer;
 import net.mnementh64.neural.model.layer.InputLayer;
 import net.mnementh64.neural.model.layer.Layer;
 import net.mnementh64.neural.model.layer.OutputLayer;
+import net.mnementh64.neural.model.weight.WeightInitFunction;
 
 public class Network
 {
@@ -81,6 +81,26 @@ public class Network
 	public int getLayerSize(int layerIndex)
 	{
 		return layers.get(layerIndex).getNbNodes();
+	}
+
+	/**
+	 * Get a layer weight init function
+	 * @param layerIndex : 0 based index
+	 * @return
+	 */
+	public WeightInitFunction getLayerWeightInitfunction(int layerIndex)
+	{
+		return layers.get(layerIndex).weightInitFunction;
+	}
+
+	/**
+	 * Get a layer activation function
+	 * @param layerIndex : 0 based index
+	 * @return
+	 */
+	public ActivationFunction getLayerActivationfunction(int layerIndex)
+	{
+		return layers.get(layerIndex).activationFunction;
 	}
 
 	private void setLayers(List<Layer> layers)

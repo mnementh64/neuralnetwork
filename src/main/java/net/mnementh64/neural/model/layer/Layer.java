@@ -42,7 +42,12 @@ public abstract class Layer
 	 * Activation function of all nodes : sigmoide, hyperbolic tangent, ...
 	 */
 	@JsonProperty
-	ActivationFunction activationFunction;
+	public ActivationFunction activationFunction;
+	/**
+	 * Weight initialization function
+	 */
+	@JsonProperty
+	public WeightInitFunction weightInitFunction;
 	/**
 	 * weights between layer nodes and next layer nodes
 	 */
@@ -65,7 +70,8 @@ public abstract class Layer
 
 	public void linkTo(Layer nextLayer, WeightInitFunction weightInitFunction) throws Exception
 	{
-		weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
+		this.weightInitFunction = weightInitFunction;
+		this.weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
 	}
 
 	public void init(List<Double> input) throws Exception

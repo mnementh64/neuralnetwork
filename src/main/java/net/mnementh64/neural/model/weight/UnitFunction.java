@@ -3,6 +3,11 @@ package net.mnementh64.neural.model.weight;
 public class UnitFunction extends WeightInitFunction
 {
 
+	public UnitFunction()
+	{
+		super(Type.UNIT);
+	}
+
 	@Override
 	public double[][] init(int s1, int s2)
 	{

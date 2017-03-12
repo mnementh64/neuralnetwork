@@ -1,10 +1,10 @@
 package net.mnementh64.neural.model.weight;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Random;
 
-public class RandomUniformFunction extends WeightInitFunction
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class RandomGaussianFunction extends WeightInitFunction
 {
 
 	@JsonProperty
@@ -12,14 +12,14 @@ public class RandomUniformFunction extends WeightInitFunction
 	@JsonProperty
 	double max;
 
-	public RandomUniformFunction()
+	public RandomGaussianFunction()
 	{
-		super(Type.RANDOM_UNIFORM);
+		super(Type.RANDOM_GAUSSIAN);
 	}
 
-	public RandomUniformFunction(double min, double max)
+	public RandomGaussianFunction(double min, double max)
 	{
-		super(Type.RANDOM_UNIFORM);
+		super(Type.RANDOM_GAUSSIAN);
 		this.min = min;
 		this.max = max;
 	}
@@ -32,7 +32,7 @@ public class RandomUniformFunction extends WeightInitFunction
 		random.setSeed(System.currentTimeMillis());
 		for (int i1 = 0; i1 < s1; i1++)
 			for (int i2 = 0; i2 < s2; i2++)
-				weights[i1][i2] = (max - min) * random.nextDouble() + min;
+				weights[i1][i2] = (max - min) * random.nextGaussian() + min;
 
 		return weights;
 	}

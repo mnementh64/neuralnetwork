@@ -1,6 +1,10 @@
 package net.mnementh64.neural;
 
 import net.mnementh64.neural.model.activation.ActivationUtils;
+import net.mnementh64.neural.model.activation.SigmoideFunction;
+import net.mnementh64.neural.model.activation.TanhFunction;
+import net.mnementh64.neural.model.weight.RandomGaussianFunction;
+import net.mnementh64.neural.model.weight.RandomUniformFunction;
 import net.mnementh64.neural.model.weight.WeightUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,6 +50,23 @@ public class NetworkSaveAndLoadTest
 		Assert.assertTrue(network.getLayerSize(0) == 2);
 		Assert.assertTrue(network.getLayerSize(1) == 5);
 		Assert.assertTrue(network.getLayerSize(2) == 1);
+	}
+
+	@Test
+	public void networkLoadTestTypes() throws Exception
+	{
+		String descriptor = TestUtils.loadResource("serializeTypes.json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+		Network network = mapper.readValue(descriptor, Network.class);
+		System.out.println(network);
+
+		Assert.assertTrue(network.getLayerActivationfunction(0) == null);
+		Assert.assertTrue(network.getLayerActivationfunction(1) instanceof SigmoideFunction);
+		Assert.assertTrue(network.getLayerActivationfunction(2) instanceof TanhFunction);
+		Assert.assertTrue(network.getLayerWeightInitfunction(0) instanceof RandomUniformFunction);
+		Assert.assertTrue(network.getLayerWeightInitfunction(1) instanceof RandomGaussianFunction);
+		Assert.assertTrue(network.getLayerWeightInitfunction(2) == null);
 	}
 
 }
