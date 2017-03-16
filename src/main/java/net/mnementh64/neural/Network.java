@@ -14,6 +14,7 @@ import net.mnementh64.neural.model.layer.HiddenLayer;
 import net.mnementh64.neural.model.layer.InputLayer;
 import net.mnementh64.neural.model.layer.Layer;
 import net.mnementh64.neural.model.layer.OutputLayer;
+import net.mnementh64.neural.model.layer.RecurrentLayer;
 import net.mnementh64.neural.model.weight.WeightInitFunction;
 
 public class Network
@@ -103,6 +104,16 @@ public class Network
 		return layers.get(layerIndex).activationFunction;
 	}
 
+	/**
+	 * Get a layer weight init function
+	 * @param layerIndex : 0 based index
+	 * @return
+	 */
+	public Layer.Type getLayerType(int layerIndex)
+	{
+		return layers.get(layerIndex).type;
+	}
+
 	private void setLayers(List<Layer> layers)
 	{
 		this.layers = layers;
@@ -115,11 +126,20 @@ public class Network
 		private WeightInitFunction weightInitFunction;
 		private double learningRate = 0.01f;
 
-		private class LayerDescriptor
+		private static class LayerDescriptor
 		{
 
+			boolean isRecurrent = false;
 			int nbNodes;
 			ActivationFunction activationFunction;
+
+			static LayerDescriptor from(int nbNodes, ActivationFunction activationFunction)
+			{
+				LayerDescriptor layerDescriptor = new LayerDescriptor();
+				layerDescriptor.nbNodes = nbNodes;
+				layerDescriptor.activationFunction = activationFunction;
+				return layerDescriptor;
+			}
 		}
 
 		public Builder setWeightInitFunction(WeightInitFunction weightInitFunction)
@@ -142,12 +162,17 @@ public class Network
 			return this;
 		}
 
+		public Builder addRecurrentLayer(int nbNodes, ActivationFunction activationFunction)
+		{
+			LayerDescriptor layerDescriptor = LayerDescriptor.from(nbNodes, activationFunction);
+			layerDescriptor.isRecurrent = true;
+			layerDescriptors.add(layerDescriptor);
+			return this;
+		}
+
 		public Builder addLayer(int nbNodes, ActivationFunction activationFunction)
 		{
-			LayerDescriptor layerDescriptor = new LayerDescriptor();
-			layerDescriptor.nbNodes = nbNodes;
-			layerDescriptor.activationFunction = activationFunction;
-			layerDescriptors.add(layerDescriptor);
+			layerDescriptors.add(LayerDescriptor.from(nbNodes, activationFunction));
 			return this;
 		}
 
@@ -170,7 +195,8 @@ public class Network
 			for (int i = 1; i < (layerDescriptors.size() - 1); i++)
 			{
 				layerDescriptor = layerDescriptors.get(i);
-				Layer hiddenLayer = new HiddenLayer(layerDescriptor.activationFunction, layerDescriptor.nbNodes);
+				Layer hiddenLayer = layerDescriptor.isRecurrent ? new RecurrentLayer(layerDescriptor.activationFunction, layerDescriptor.nbNodes)
+						: new HiddenLayer(layerDescriptor.activationFunction, layerDescriptor.nbNodes);
 				layers.add(hiddenLayer);
 			}
 

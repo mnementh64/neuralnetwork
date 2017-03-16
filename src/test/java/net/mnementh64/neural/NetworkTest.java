@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.mnementh64.neural.model.activation.ActivationUtils;
-import net.mnementh64.neural.model.weight.WeightUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,9 +11,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mnementh64.neural.model.activation.ActivationFunction;
 import net.mnementh64.neural.model.DataRow;
 import net.mnementh64.neural.model.NetworkRunStats;
+import net.mnementh64.neural.model.activation.ActivationUtils;
+import net.mnementh64.neural.model.weight.WeightUtils;
 
 public class NetworkTest
 {

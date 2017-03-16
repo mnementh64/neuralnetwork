@@ -26,6 +26,7 @@ public abstract class ActivationFunction
 	{
 
 	}
+
 	protected ActivationFunction(Type type)
 	{
 		this.type = type;

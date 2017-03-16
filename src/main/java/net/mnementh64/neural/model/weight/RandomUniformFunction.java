@@ -1,8 +1,8 @@
 package net.mnementh64.neural.model.weight;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Random;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RandomUniformFunction extends WeightInitFunction
 {

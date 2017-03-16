@@ -8,7 +8,7 @@
     "weightsToNext" : [ [ 1.0, 1.0, 1.0, 1.0, 1.0 ], [ 1.0, 1.0, 1.0, 1.0, 1.0 ] ],
     "nbNodes" : 2
   }, {
-    "type" : "HIDDEN",
+    "type" : "RECURRENT",
     "activationFunction" : {
       "type" : "SIGMOID"
     },

@@ -21,18 +21,19 @@ import net.mnementh64.neural.model.weight.WeightInitFunction;
 		@JsonSubTypes.Type(name = "INPUT", value = InputLayer.class),
 		@JsonSubTypes.Type(name = "HIDDEN", value = HiddenLayer.class),
 		@JsonSubTypes.Type(name = "OUTPUT", value = OutputLayer.class),
+		@JsonSubTypes.Type(name = "RECURRENT", value = RecurrentLayer.class),
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Layer
 {
 
-	enum Type
+	public enum Type
 	{
-		INPUT, HIDDEN, OUTPUT
+		INPUT, HIDDEN, OUTPUT, RECURRENT
 	}
 
 	@JsonProperty
-	Type type;
+	public Type type;
 	/**
 	 *  ordered collection of nodes
 	 */
@@ -152,7 +153,7 @@ public abstract class Layer
 		return value;
 	}
 
-	private double computeOutputToNode(int nextLayerNodeIndex) throws Exception
+	double computeOutputToNode(int nextLayerNodeIndex) throws Exception
 	{
 		double value = 0;
 
