@@ -1,0 +1,30 @@
+{
+  "layers" : [ {
+    "type" : "INPUT",
+    "weightInitFunction" : {
+      "type" : "UNIT",
+      "value" : 1.0
+    },
+    "weightsToNext" : [ [ 1.0197329539941178, 1.0197329539941178, 1.0197329539941178 ], [ 0.9901335230029411, 0.9901335230029411, 0.9901335230029411 ] ],
+    "nbNodes" : 2
+  }, {
+    "type" : "RECURRENT",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
+    "weightInitFunction" : {
+      "type" : "UNIT",
+      "value" : 1.0
+    },
+    "weightsToNext" : [ [ 1.0366863421290733 ], [ 1.0366863421290733 ], [ 1.0366863421290733 ] ],
+    "weightsToItself" : [ [ 1.0072129726495556, 1.0072129726495556, 1.0072129726495556 ], [ 1.0072129726495556, 1.0072129726495556, 1.0072129726495556 ], [ 1.0072129726495556, 1.0072129726495556, 1.0072129726495556 ] ],
+    "nbNodes" : 3
+  }, {
+    "type" : "OUTPUT",
+    "activationFunction" : {
+      "type" : "SIGMOID"
+    },
+    "nbNodes" : 1
+  } ],
+  "learningRate" : 0.5
+}

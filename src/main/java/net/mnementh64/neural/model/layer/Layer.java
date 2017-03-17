@@ -139,12 +139,12 @@ public abstract class Layer
 				.forEach(i -> nodes.add(new Node()));
 	}
 
-	private double getDelta(int j) throws Exception
+	double getDelta(int j) throws Exception
 	{
 		return nodes.get(j).delta;
 	}
 
-	private double computeWeightedDelta(double[] weights) throws Exception
+	double computeWeightedDelta(double[] weights) throws Exception
 	{
 		double value = 0;
 		for (int i = 0; i < nodes.size(); i++)
