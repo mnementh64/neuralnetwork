@@ -69,6 +69,11 @@ public class Network
 		}
 	}
 
+	public void reset()
+	{
+		layers.forEach(Layer::reset);
+	}
+
 	public int size()
 	{
 		return layers.size();

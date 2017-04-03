@@ -75,6 +75,11 @@ public abstract class Layer
 		this.weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
 	}
 
+	public void reset()
+	{
+		this.weightsToNext = weightInitFunction.init(weightsToNext.length, weightsToNext[0].length);
+	}
+
 	public void init(List<Double> input) throws Exception
 	{
 		if (input.size() != getNbNodes())

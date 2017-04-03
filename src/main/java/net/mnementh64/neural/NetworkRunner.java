@@ -112,6 +112,7 @@ public class NetworkRunner
 		network.learningRate = learningRate;
 
 		networkRunStats.avgError = Math.sqrt(totalError / trainingSet.size());
+		networkRunStats.avgGeneralizationError = Math.sqrt(totalGeneralizeError / generalizeSet.size());
 		networkRunStats.error = totalError;
 		networkRunStats.nbIterations = nbIterations;
 		networkRunStats.overTrainingOccurences = nbOverTraining;

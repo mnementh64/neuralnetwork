@@ -9,5 +9,6 @@ public class NetworkRunStats
 	public int overTrainingOccurences;
 	public double error;
 	public double avgError;
+	public double avgGeneralizationError;
 	public double learningRate;
 }
