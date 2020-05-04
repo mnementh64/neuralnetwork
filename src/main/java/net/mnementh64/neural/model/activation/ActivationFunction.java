@@ -9,14 +9,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 {
 		@JsonSubTypes.Type(name = "IDENTITY", value = IdentityFunction.class),
 		@JsonSubTypes.Type(name = "SIGMOID", value = SigmoideFunction.class),
-		@JsonSubTypes.Type(name = "TANH", value = TanhFunction.class)
+		@JsonSubTypes.Type(name = "TANH", value = TanhFunction.class),
+		@JsonSubTypes.Type(name = "RELU", value = ReLuFunction.class)
 })
 public abstract class ActivationFunction
 {
 
 	enum Type
 	{
-		IDENTITY, SIGMOID, TANH
+		IDENTITY, SIGMOID, TANH, RELU
 	}
 
 	@JsonProperty

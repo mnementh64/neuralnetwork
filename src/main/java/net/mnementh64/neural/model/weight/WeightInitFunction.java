@@ -32,5 +32,11 @@ public abstract class WeightInitFunction
 		this.type = type;
 	}
 
+	/**
+	 * Compute the initial weights of all links between nodes of 2 layers
+	 * @param s1 : current layer size
+	 * @param s2 : next layer size
+	 * @return the weight value for links between all nodes of current layer and all nodes of next layer.
+	 */
 	public abstract double[][] init(int s1, int s2);
 }
