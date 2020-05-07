@@ -154,5 +154,4 @@ public class NetworkTest
 		Assert.assertTrue(stats.nbIterations >= 300);
 		Assert.assertTrue(stats.error == 0);
 	}
-
 }

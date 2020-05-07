@@ -1,30 +1,34 @@
 package net.mnementh64.neural.model.layer;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
 import net.mnementh64.neural.model.activation.ActivationFunction;
 import net.mnementh64.neural.model.activation.ActivationUtils;
 
-public class OutputLayer extends Layer
-{
+import java.util.List;
+import java.util.stream.IntStream;
 
-	public OutputLayer()
-	{
-		super(Type.OUTPUT);
-	}
+public class OutputLayer extends Layer {
 
-	public OutputLayer(ActivationFunction activationFunction, int nbNodes)
-	{
-		super(Type.OUTPUT, activationFunction == null ? ActivationUtils.sigmoid : activationFunction, nbNodes);
-	}
+    public OutputLayer() {
+        super(Type.OUTPUT);
+    }
 
-	public void computeError(List<Double> expectedValues) throws Exception
-	{
-		if (expectedValues.size() != getNbNodes())
-			throw new Exception("Expected values are bad sized for the output layer : get " + expectedValues.size() + " items and expected " + getNbNodes());
+    public OutputLayer(ActivationFunction activationFunction, int nbNodes) {
+        super(Type.OUTPUT, activationFunction == null ? ActivationUtils.sigmoid : activationFunction, nbNodes);
+    }
 
-		IntStream.range(0, expectedValues.size())
-				.forEach(i -> nodes.get(i).delta = expectedValues.get(i) - nodes.get(i).value);
-	}
+    public void computeError(List<Double> expectedValues) throws Exception {
+        if (expectedValues.size() != getNbNodes())
+            throw new Exception("Expected values are bad sized for the output layer : get " + expectedValues.size() + " items and expected " + getNbNodes());
+
+        IntStream.range(0, expectedValues.size())
+                .forEach(i -> nodes.get(i).delta = expectedValues.get(i) - nodes.get(i).value);
+    }
+
+    @Override
+    public Layer clone() {
+        Layer clone = new OutputLayer();
+        super.cloneProperties(clone);
+
+        return clone;
+    }
 }

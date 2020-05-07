@@ -1,170 +1,157 @@
 package net.mnementh64.neural.model.layer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import net.mnementh64.neural.model.Node;
 import net.mnementh64.neural.model.activation.ActivationFunction;
 import net.mnementh64.neural.model.weight.WeightInitFunction;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
-{
-		@JsonSubTypes.Type(name = "INPUT", value = InputLayer.class),
-		@JsonSubTypes.Type(name = "HIDDEN", value = HiddenLayer.class),
-		@JsonSubTypes.Type(name = "OUTPUT", value = OutputLayer.class),
-		@JsonSubTypes.Type(name = "RECURRENT", value = RecurrentLayer.class),
-})
+        {
+                @JsonSubTypes.Type(name = "INPUT", value = InputLayer.class),
+                @JsonSubTypes.Type(name = "HIDDEN", value = HiddenLayer.class),
+                @JsonSubTypes.Type(name = "OUTPUT", value = OutputLayer.class),
+                @JsonSubTypes.Type(name = "RECURRENT", value = RecurrentLayer.class),
+        })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class Layer
-{
+public abstract class Layer {
 
-	public enum Type
-	{
-		INPUT, HIDDEN, OUTPUT, RECURRENT
-	}
+    @JsonProperty
+    public Type type;
+    /**
+     * Activation function of all nodes : sigmoide, hyperbolic tangent, ...
+     */
+    @JsonProperty
+    public ActivationFunction activationFunction;
+    /**
+     * Weight initialization function
+     */
+    @JsonProperty
+    public WeightInitFunction weightInitFunction;
+    /**
+     * weights between layer nodes and next layer nodes
+     */
+    @JsonProperty
+    public double[][] weightsToNext;
+    /**
+     * ordered collection of nodes
+     */
+    @JsonIgnore
+    List<Node> nodes;
+    Layer(Type type) {
+        this.type = type;
+    }
 
-	@JsonProperty
-	public Type type;
-	/**
-	 *  ordered collection of nodes
-	 */
-	@JsonIgnore
-	List<Node> nodes;
-	/**
-	 * Activation function of all nodes : sigmoide, hyperbolic tangent, ...
-	 */
-	@JsonProperty
-	public ActivationFunction activationFunction;
-	/**
-	 * Weight initialization function
-	 */
-	@JsonProperty
-	public WeightInitFunction weightInitFunction;
-	/**
-	 * weights between layer nodes and next layer nodes
-	 */
-	@JsonProperty
-	double[][] weightsToNext;
+    Layer(Type type, ActivationFunction activationFunction, int nbNodes) {
+        this.type = type;
+        this.activationFunction = activationFunction;
 
-	Layer(Type type)
-	{
-		this.type = type;
-	}
+        // create nodes
+        setNbNodes(nbNodes);
+    }
 
-	Layer(Type type, ActivationFunction activationFunction, int nbNodes)
-	{
-		this.type = type;
-		this.activationFunction = activationFunction;
+    public abstract Layer clone();
 
-		// create nodes
-		setNbNodes(nbNodes);
-	}
+    protected void cloneProperties(Layer clone) {
+        clone.activationFunction = this.activationFunction;
+        clone.weightInitFunction = this.weightInitFunction;
+        clone.weightsToNext = this.weightsToNext;
+        clone.setNbNodes(this.getNbNodes());
+    }
 
-	public void linkTo(Layer nextLayer, WeightInitFunction weightInitFunction) throws Exception
-	{
-		this.weightInitFunction = weightInitFunction;
-		this.weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
-	}
+    public void linkTo(Layer nextLayer, WeightInitFunction weightInitFunction) throws Exception {
+        this.weightInitFunction = weightInitFunction;
+        this.weightsToNext = weightInitFunction.init(this.nodes.size(), nextLayer.nodes.size());
+    }
 
-	public void reset()
-	{
-		this.weightsToNext = weightInitFunction.init(weightsToNext.length, weightsToNext[0].length);
-	}
+    public void reset() {
+        this.weightsToNext = weightInitFunction.init(weightsToNext.length, weightsToNext[0].length);
+    }
 
-	public void init(List<Double> input) throws Exception
-	{
-		if (input.size() != getNbNodes())
-			throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + getNbNodes());
+    public void init(List<Double> input) throws Exception {
+        if (input.size() != getNbNodes())
+            throw new Exception("Input values are bad sized for this layer : get " + input.size() + " items and expected " + getNbNodes());
 
-		IntStream.range(0, input.size())
-				.forEach(i -> nodes.get(i).value = input.get(i));
-	}
+        IntStream.range(0, input.size())
+                .forEach(i -> nodes.get(i).value = input.get(i));
+    }
 
-	public void feedForward(Layer previousLayer) throws Exception
-	{
-		// compute each current layer's node's value
-		for (int j = 0; j < nodes.size(); j++)
-		{
-			Node node = nodes.get(j);
-			node.input = previousLayer.computeOutputToNode(j);
-			node.value = activationFunction.apply(node.input);
-		}
-	}
+    public void feedForward(Layer previousLayer) throws Exception {
+        // compute each current layer's node's value
+        for (int j = 0; j < nodes.size(); j++) {
+            Node node = nodes.get(j);
+            node.input = previousLayer.computeOutputToNode(j);
+            node.value = activationFunction.apply(node.input);
+        }
+    }
 
-	public void computeDelta(Layer nextLayer) throws Exception
-	{
-		// compute each current layer's node's delta
-		for (int j = 0; j < nodes.size(); j++)
-		{
-			Node node = nodes.get(j);
-			double delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
-			node.delta = delta * activationFunction.applyDerivative(node.input);
-		}
-	}
+    public void computeDelta(Layer nextLayer) throws Exception {
+        // compute each current layer's node's delta
+        for (int j = 0; j < nodes.size(); j++) {
+            Node node = nodes.get(j);
+            double delta = nextLayer.computeWeightedDelta(weightsToNext[j]);
+            node.delta = delta * activationFunction.applyDerivative(node.input);
+        }
+    }
 
-	public void adjustWeights(Layer nextLayer, double learningRate) throws Exception
-	{
-		for (int i = 0; i < nodes.size(); i++)
-		{
-			Node node = nodes.get(i);
+    public void adjustWeights(Layer nextLayer, double learningRate) throws Exception {
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
 
-			for (int j = 0; j < nextLayer.getNbNodes(); j++)
-			{
-				double nextDelta = nextLayer.getDelta(j);
-				weightsToNext[i][j] += learningRate * node.value * nextDelta;
-			}
-		}
-	}
+            for (int j = 0; j < nextLayer.getNbNodes(); j++) {
+                double nextDelta = nextLayer.getDelta(j);
+                weightsToNext[i][j] += learningRate * node.value * nextDelta;
+            }
+        }
+    }
 
-	public List<Double> output()
-	{
-		return nodes.stream()
-				.map(n -> n.value)
-				.collect(Collectors.toList());
-	}
+    public List<Double> output() {
+        return nodes.stream()
+                .map(n -> n.value)
+                .collect(Collectors.toList());
+    }
 
-	public int getNbNodes()
-	{
-		return nodes.size();
-	}
+    public int getNbNodes() {
+        return nodes.size();
+    }
 
-	public void setNbNodes(int nbNodes)
-	{
-		nodes = new ArrayList<>(nbNodes);
-		IntStream.rangeClosed(1, nbNodes)
-				.forEach(i -> nodes.add(new Node()));
-	}
+    public void setNbNodes(int nbNodes) {
+        nodes = new ArrayList<>(nbNodes);
+        IntStream.rangeClosed(1, nbNodes)
+                .forEach(i -> nodes.add(new Node()));
+    }
 
-	double getDelta(int j) throws Exception
-	{
-		return nodes.get(j).delta;
-	}
+    double getDelta(int j) throws Exception {
+        return nodes.get(j).delta;
+    }
 
-	double computeWeightedDelta(double[] weights) throws Exception
-	{
-		double value = 0;
-		for (int i = 0; i < nodes.size(); i++)
-			value += weights[i] * nodes.get(i).delta;
+    double computeWeightedDelta(double[] weights) throws Exception {
+        double value = 0;
+        for (int i = 0; i < nodes.size(); i++)
+            value += weights[i] * nodes.get(i).delta;
 
-		return value;
-	}
+        return value;
+    }
 
-	double computeOutputToNode(int nextLayerNodeIndex) throws Exception
-	{
-		double value = 0;
+    double computeOutputToNode(int nextLayerNodeIndex) throws Exception {
+        double value = 0;
 
-		for (int i = 0; i < nodes.size(); i++)
-			value += nodes.get(i).value * weightsToNext[i][nextLayerNodeIndex];
+        for (int i = 0; i < nodes.size(); i++)
+            value += nodes.get(i).value * weightsToNext[i][nextLayerNodeIndex];
 
-		return value;
-	}
+        return value;
+    }
+
+    public enum Type {
+        INPUT, HIDDEN, OUTPUT, RECURRENT
+    }
 }
