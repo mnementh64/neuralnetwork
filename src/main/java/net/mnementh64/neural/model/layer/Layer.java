@@ -47,6 +47,7 @@ public abstract class Layer {
      */
     @JsonIgnore
     List<Node> nodes;
+
     Layer(Type type) {
         this.type = type;
     }
@@ -75,6 +76,14 @@ public abstract class Layer {
 
     public void reset() {
         this.weightsToNext = weightInitFunction.init(weightsToNext.length, weightsToNext[0].length);
+    }
+
+    public void clearNodes() {
+        this.nodes.forEach(node -> {
+            node.input = 0;
+            node.value = 0;
+            node.delta = 0;
+        });
     }
 
     public void init(List<Double> input) throws Exception {

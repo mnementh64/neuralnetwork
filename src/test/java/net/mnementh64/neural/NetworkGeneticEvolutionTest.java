@@ -8,24 +8,19 @@ import org.junit.Test;
 public class NetworkGeneticEvolutionTest {
 
     @Test
-    public void crossover() throws Exception {
+    public void SPBX() throws Exception {
         // Given
         NetworkGeneticEvolution geneticEvolution = new NetworkGeneticEvolution() {
             @Override
             int getRandomLayerForCrossover(int nbLayers) {
                 return 1;
             }
-
-            @Override
-            int getRandomNodeForCrossover(int whichLayer, int nbNodes) {
-                return 6;
-            }
         };
         Network network1 = createNetwork1();
         Network network2 = createNetwork2();
 
         // When
-        Network nextGenerationNetwork = geneticEvolution.crossover(network1, network2);
+        Network nextGenerationNetwork = geneticEvolution.SPBX(network1, network2);
 
         // Then
         Assert.assertEquals(4, nextGenerationNetwork.layers.size());
@@ -34,20 +29,18 @@ public class NetworkGeneticEvolutionTest {
 
         Assert.assertEquals(Layer.Type.HIDDEN, nextGenerationNetwork.layers.get(1).type);
         Assert.assertEquals(20, nextGenerationNetwork.layers.get(1).getNbNodes());
-        // weights from network 1 (until 5)
         Assert.assertEquals(1.0, nextGenerationNetwork.layers.get(1).weightsToNext[0][1], 0.0);
-        Assert.assertEquals(501.0, nextGenerationNetwork.layers.get(1).weightsToNext[5][1], 0.0);
-        // weights from network 2
+        Assert.assertEquals(5001.0, nextGenerationNetwork.layers.get(1).weightsToNext[5][1], 0.0);
         Assert.assertEquals(6001.0, nextGenerationNetwork.layers.get(1).weightsToNext[6][1], 0.0);
         Assert.assertEquals(19001.0, nextGenerationNetwork.layers.get(1).weightsToNext[19][1], 0.0);
 
         Assert.assertEquals(Layer.Type.HIDDEN, nextGenerationNetwork.layers.get(2).type);
         Assert.assertEquals(18, nextGenerationNetwork.layers.get(2).getNbNodes());
         // all weights from network 1
-        Assert.assertEquals(10001.0, nextGenerationNetwork.layers.get(2).weightsToNext[0][1], 0.0);
-        Assert.assertEquals(20001.0, nextGenerationNetwork.layers.get(2).weightsToNext[5][1], 0.0);
-        Assert.assertEquals(22001.0, nextGenerationNetwork.layers.get(2).weightsToNext[6][1], 0.0);
-        Assert.assertEquals(44001.0, nextGenerationNetwork.layers.get(2).weightsToNext[17][1], 0.0);
+        Assert.assertEquals(1.0, nextGenerationNetwork.layers.get(2).weightsToNext[0][1], 0.0);
+        Assert.assertEquals(1001.0, nextGenerationNetwork.layers.get(2).weightsToNext[5][1], 0.0);
+        Assert.assertEquals(1201.0, nextGenerationNetwork.layers.get(2).weightsToNext[6][1], 0.0);
+        Assert.assertEquals(3401.0, nextGenerationNetwork.layers.get(2).weightsToNext[17][1], 0.0);
 
         Assert.assertEquals(Layer.Type.OUTPUT, nextGenerationNetwork.layers.get(3).type);
         Assert.assertEquals(4, nextGenerationNetwork.layers.get(3).getNbNodes());
@@ -60,7 +53,7 @@ public class NetworkGeneticEvolutionTest {
         Network network = createNetwork1();
 
         // When
-        geneticEvolution.mutate(network, 0.5);
+        geneticEvolution.mutate(network, 0.5, true, -1, 1);
 
         // Then
         // must have more weights with value 1 than before mutation (because max value is 1 once mutated and hidden weight mostly have values greater than 1)
@@ -122,5 +115,19 @@ public class NetworkGeneticEvolutionTest {
             }
         }
         return network2;
+    }
+
+    @Test
+    public void checkSimilarity() throws Exception {
+        // Given
+        NetworkGeneticEvolution geneticEvolution = new NetworkGeneticEvolution();
+        Network network1 = createNetwork1();
+        Network network2 = createNetwork2();
+
+        // When
+        geneticEvolution.checkSimilarity(network1, network2);
+
+        // Then
+        // no exception ? test is successful
     }
 }

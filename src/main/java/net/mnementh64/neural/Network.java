@@ -60,17 +60,25 @@ public class Network {
         }
     }
 
-    public Network crossover(Network other, double mutationRate) {
+    public Network crossover(Network other) {
         NetworkGeneticEvolution geneticEvolution = new NetworkGeneticEvolution();
         geneticEvolution.checkSimilarity(this, other);
-        Network network = geneticEvolution.crossover(this, other);
-        geneticEvolution.mutate(network, mutationRate);
+        Network network = geneticEvolution.SPBX(this, other);
 
         return network;
     }
 
+    public void mutate(double mutationRate, boolean applyExtremValue, double minValue, double maxValue) {
+        NetworkGeneticEvolution geneticEvolution = new NetworkGeneticEvolution();
+        geneticEvolution.mutate(this, mutationRate, applyExtremValue, minValue, maxValue);
+    }
+
     public void reset() {
         layers.forEach(Layer::reset);
+    }
+
+    public void clearNodes() {
+        layers.forEach(Layer::clearNodes);
     }
 
     public int size() {
