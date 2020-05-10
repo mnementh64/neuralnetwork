@@ -65,7 +65,15 @@ public abstract class Layer {
     protected void cloneProperties(Layer clone) {
         clone.activationFunction = this.activationFunction;
         clone.weightInitFunction = this.weightInitFunction;
-        clone.weightsToNext = this.weightsToNext;
+        if (this.weightsToNext != null) {
+            clone.weightsToNext = new double[this.weightsToNext.length][];
+            for (int i = 0; i < this.weightsToNext.length; i++) {
+                clone.weightsToNext[i] = new double[this.weightsToNext[i].length];
+                for (int j = 0; j < this.weightsToNext[i].length; j++) {
+                    clone.weightsToNext[i][j] = this.weightsToNext[i][j];
+                }
+            }
+        }
         clone.setNbNodes(this.getNbNodes());
     }
 
